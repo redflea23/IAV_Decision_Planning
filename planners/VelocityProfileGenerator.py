@@ -101,7 +101,7 @@ class VelocityProfileGenerator(object):
         """
             Computes a velocity trajectory for deceleration to a full stop.
         """
-        print("BREAKING")
+        #print("BREAKING")
         trajectory = []
 
         # Using d = (v_f^2 - v_i^2) / (2 * a)
@@ -287,6 +287,7 @@ class VelocityProfileGenerator(object):
          Computes a velocity trajectory for following a lead vehicle
          Still on development
         """
+        print("Wrong Traj")
         trajectory = []
         return trajectory     
     
@@ -295,9 +296,9 @@ class VelocityProfileGenerator(object):
         """
          Computes a velocity trajectory for nominal speed tracking, a.k.a. Lane Follow
          or Cruise Control
-         2.9999999935185704
+         
         """
-        print("NOMINAL TRAJECTORY")
+        
         trajectory = []
         accel_distance = 0
 
@@ -344,8 +345,9 @@ class VelocityProfileGenerator(object):
                 # initial velocity vi.
                 # Hint: use the self.calc_final_speed() that you completed, also check which one should you
                 # use, self._a_max or -self._a_max. 
-                vf = self.calc_final_speed(vf, self._a_max, dist)
-                vf = max(desired_speed, vf)
+                
+                vf = self.calc_final_speed(vi, self._a_max, dist)
+                vf = min(desired_speed, vf)
             
             else:
                 # TODO calculate the final velocity at the calculated distance,
@@ -354,8 +356,8 @@ class VelocityProfileGenerator(object):
                 # Hint: use the self.calc_final_speed() that you completed, also check which one should you
                 # use, self._a_max or -self._a_max. 
                 
-                vf = self.calc_final_speed(vf, -self._a_max, dist)
-                vf = min(desired_speed, vf)
+                vf = self.calc_final_speed(vi, -self._a_max, dist)
+                vf = max(desired_speed, vf)
             
             path_point = spiral[i]
             v = vi
@@ -366,7 +368,7 @@ class VelocityProfileGenerator(object):
             time_step = np.abs(vf-vi)/self._a_max
             time += time_step
             vi = vf 
-        
+            
         for i in range(ramp_end_index,len(spiral)-1):
             path_point = spiral[i]
             v = desired_speed
@@ -393,6 +395,7 @@ class VelocityProfileGenerator(object):
         i = len(spiral)-1
         path_point = spiral[i]
         v = desired_speed
+       
         relative_time = time
         traj_point = TrajectoryPoint(path_point, v, 0, relative_time)
         trajectory.append(traj_point)
